@@ -1,0 +1,14 @@
+[package]
+name = "chip_macro"
+version = "0.1.0"
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+chip_assembler = { path = "../chip_assembler" }
+quote = "1.0.33"
+syn = "2.0.38"

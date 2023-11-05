@@ -1,0 +1,10 @@
+[package]
+name = "chip_assembler"
+version = "0.1.0"
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+itertools = { version = "0.11.0" }
+thiserror = "1.0.50"

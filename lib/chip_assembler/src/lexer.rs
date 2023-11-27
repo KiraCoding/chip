@@ -3,6 +3,7 @@ use core::iter::Peekable;
 use core::str::CharIndices;
 use itertools::Itertools;
 
+#[derive(Debug)]
 pub struct Lexer<'l> {
     input: &'l str,
     iter: Peekable<CharIndices<'l>>,
@@ -22,7 +23,7 @@ impl<'l> Lexer<'l> {
         self.iter
             .by_ref()
             .peeking_take_while(|&(_, c)| c != '\n')
-            .for_each(|_| {});
+            .for_each(drop);
     }
 
     fn lex_token(&mut self, head: usize) -> Token<'l> {
@@ -33,9 +34,9 @@ impl<'l> Lexer<'l> {
                 .peeking_take_while(|&(_, c)| c.is_ascii_alphanumeric())
                 .count();
 
-        dbg!(&self.input[head..tail]);
+        dbg!(&self.input[head..=tail]);
 
-        match &self.input[head..tail] {
+        match &self.input[head..=tail] {
             s if s.starts_with("0x") => {
                 let number = u16::from_str_radix(&s[2..], 16).ok();
                 number.map_or(Token::Unknown(s), Token::Number)
@@ -49,47 +50,18 @@ impl<'l> Iterator for Lexer<'l> {
     type Item = Token<'l>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        // while let Some(&(pos, c)) = self.iter.peek() {
-        //     match c {
-        //         c if c.is_whitespace() => {
-        //             self.iter.next();
-        //         }
-        //         ';' => self.skip_comment(),
-        //         ',' => {
-        //             self.iter.next();
-        //             return Some(Token::Delimeter(Delimeter::Comma));
-        //         }
-        //         c if c.is_ascii_alphabetic() || c.is_ascii_digit() => {
-        //             return Some(self.lex_token(pos))
-        //         }
-        //         _ => {
-        //             self.iter.next();
-        //             return Some(Token::Unknown(&self.input[pos..pos + 1]));
-        //         }
-        //     }
-        // }
-
-        // None
-
         self.iter
             .by_ref()
-            .skip_while(|&(_, c)| c.is_whitespace())
+            .skip_while(|(_, c)| c.is_whitespace())
             .next()
-            .map(|(pos, c)| {
-                if c == ';' {
+            .and_then(|(pos, c)| match c {
+                ';' => {
                     self.skip_comment();
+                    self.next()
                 }
-
-                match c {
-                    ',' => Token::Delimeter(Delimeter::Comma),
-                    c if c.is_ascii_alphabetic() || c.is_ascii_digit() => self.lex_token(pos),
-                    _ => Token::Unknown(&self.input[pos..pos + 1]),
-                }
+                ',' => Some(Token::Delimeter(Delimeter::Comma)),
+                c if c.is_ascii_alphabetic() || c.is_ascii_digit() => Some(self.lex_token(pos)),
+                _ => Some(Token::Unknown(&self.input[pos..=pos])),
             })
     }
-}
-
-#[derive(Debug)]
-pub enum LexerError {
-    Invalid(),
 }

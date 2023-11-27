@@ -34,6 +34,7 @@ impl<'l> Lexer<'l> {
                 .peeking_take_while(|&(_, c)| c.is_ascii_alphanumeric())
                 .count();
 
+        #[cfg(debug_assertions)]
         dbg!(&self.input[head..=tail]);
 
         match &self.input[head..=tail] {

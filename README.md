@@ -1,12 +1,12 @@
 # Chip
 
-> **Important**\
+> [!IMPORTANT]\
 > Chip is currently under development, and official releases have not been shipped yet.
 
 A development suite for CHIP8 virtual machine enthusiasts, offering essential tools for creating, assembling, and interpreting retro-style games and applications.
 
 | Crate              | Description                                | Binary | Library |
-|:-------------------|:-------------------------------------------|:------:|:-------:|
+| :----------------- | :----------------------------------------- | :----: | :-----: |
 | [chip]             | Whole CHIP-8 toolchain.                    | X      | X       |
 | [chip_assembler]   | Assembler for CHIP-8 assembly language.    |        | X       |
 | [chip_interpreter] | Interpreter for executing CHIP-8 programs. |        | X       |
@@ -19,14 +19,14 @@ A development suite for CHIP8 virtual machine enthusiasts, offering essential to
 Rust ─ >= 1.64.0
 ```
 
-### Release
-```
-cargo build --release
-```
-
 ### Debug
 ```
 cargo build
+```
+
+### Release
+```
+cargo build --release
 ```
 
 ## License

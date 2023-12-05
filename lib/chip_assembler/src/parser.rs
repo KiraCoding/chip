@@ -231,16 +231,3 @@ impl<'t> Display for ParserError<'t> {
 }
 
 impl<'t> Error for ParserError<'t> {}
-
-#[derive(Debug)]
-pub enum ParserError2<D>
-where
-    D: Debug,
-{
-    Expected(D, D),
-    ExpectedMnemonic(D),
-    ExpectedRegister(D),
-    ExpectedNumber(D),
-    InputEnded(D),
-    Unsupported(Mnemonic),
-}

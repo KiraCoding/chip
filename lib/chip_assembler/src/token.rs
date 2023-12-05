@@ -1,4 +1,5 @@
-use std::fmt::Display;
+use core::fmt::Display;
+use core::ops::Shl;
 
 #[derive(Debug, PartialEq)]
 pub enum Token<'t> {
@@ -137,6 +138,14 @@ pub enum Register {
     Vd = 0xD,
     Ve = 0xE,
     Vf = 0xF,
+}
+
+impl Shl<u16> for Register {
+    type Output = u16;
+
+    fn shl(self, rhs: u16) -> Self::Output {
+        (self as u16) << rhs
+    }
 }
 
 impl TryFrom<&str> for Register {

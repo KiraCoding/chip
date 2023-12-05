@@ -4,6 +4,7 @@ members = ["lib/*", "bin/*"]
 package.authors = ["KiraCoding"]
 package.rust-version = "1.64.0"
 package.edition = "2021"
+package.license = "GPL-3.0-only"
 
 [profile.release]
 codegen-units = 1

@@ -3,6 +3,7 @@ use crate::token::{Delimeter, Mnemonic, Register, Token};
 use core::fmt::{Display, Formatter};
 use core::iter::Peekable;
 use std::error::Error;
+use std::fmt::Debug;
 
 pub struct Parser<'p> {
     lexer: Peekable<Lexer<'p>>,
@@ -23,7 +24,7 @@ impl<'p> Parser<'p> {
 
                 match self.parse_operand()? {
                     Operand::Register(vy) => Ok(Instruction::SeRegReg(vx, vy)),
-                    Operand::Number(number) => Ok(Instruction::SeRegVal(vx, number as u8)),
+                    Operand::Number(number) => Ok(Instruction::SeRegVal(vx, number)),
                 }
             }
             Mnemonic::Sne => {
@@ -33,7 +34,7 @@ impl<'p> Parser<'p> {
 
                 match self.parse_operand()? {
                     Operand::Register(vy) => Ok(Instruction::SneRegReg(vx, vy)),
-                    Operand::Number(number) => Ok(Instruction::SneRegVal(vx, number as u8)),
+                    Operand::Number(number) => Ok(Instruction::SneRegVal(vx, number)),
                 }
             }
             Mnemonic::Ld => {
@@ -136,8 +137,16 @@ impl<'p> Parser<'p> {
 impl<'p> Iterator for Parser<'p> {
     type Item = Instruction;
 
-    fn next(&mut self) -> Option<Self::Item> {
-        self.parse_instruction().ok()
+    fn next(&mut self) -> Option<Self::Item> {        
+        while let Some(_) = self.lexer.peek() {
+            if let Ok(instruction) = self.parse_instruction() {
+                return Some(instruction);
+            } else {
+                // Consume tokens until a valid instruction or end of input
+                self.lexer.next();
+            }
+        }
+        None
     }
 }
 
@@ -160,11 +169,11 @@ pub enum Instruction {
     Ret,
     JmpAddress(u16),
     Call(u16),
-    SeRegVal(Register, u8),
-    SneRegVal(Register, u8),
+    SeRegVal(Register, u16),
+    SneRegVal(Register, u16),
     SeRegReg(Register, Register),
-    LdRegVal(Register, u8),
-    AddRegVal(Register, u8),
+    LdRegVal(Register, u16),
+    AddRegVal(Register, u16),
     LdRegReg(Register, Register),
     Or(Register, Register),
     And(Register, Register),
@@ -175,17 +184,17 @@ pub enum Instruction {
     Subn(Register, Register),
     Shl(Register, Register),
     SneRegReg(Register, Register),
-    LdIndex(u8, u16),
+    LdIndex(u16, u16),
     JmpRegAddress(Register, u16),
-    Rnd(Register, u8),
-    Drw(Register, Register, u8),
+    Rnd(Register, u16),
+    Drw(Register, Register, u16),
     Skp(Register),
     Skpn(Register),
-    LdRegDelay(Register, u8),
-    LdRegKey(Register, u8),
-    LdDelayReg(u8, Register),
-    LdSoundReg(u8, Register),
-    AddIndexReg(u8, Register),
+    LdRegDelay(Register, u16),
+    LdRegKey(Register, u16),
+    LdDelayReg(u16, Register),
+    LdSoundReg(u16, Register),
+    AddIndexReg(u16, Register),
     LdFReg(Register),
     LdBReg(Register),
     LdMemIndexReg(Register),
@@ -222,3 +231,16 @@ impl<'t> Display for ParserError<'t> {
 }
 
 impl<'t> Error for ParserError<'t> {}
+
+#[derive(Debug)]
+pub enum ParserError2<D>
+where
+    D: Debug,
+{
+    Expected(D, D),
+    ExpectedMnemonic(D),
+    ExpectedRegister(D),
+    ExpectedNumber(D),
+    InputEnded(D),
+    Unsupported(Mnemonic),
+}

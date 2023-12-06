@@ -1,4 +1,5 @@
-use chip_assembler::{assembler::Assembler, lexer::Lexer, parser::Parser};
+use chip_assembler::{assembler::Assembler, parser::Parser};
+use chip_lexer::lexer::Lexer;
 
 fn main() {
     let lexer = Lexer::from(

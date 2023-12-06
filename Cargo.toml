@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["lib/*", "bin/*"]
+members = ["chip", "chip_assembler", "chip_interpreter", "chip_macro"]
 package.authors = ["KiraCoding"]
 package.rust-version = "1.64.0"
 package.edition = "2021"

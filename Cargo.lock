@@ -321,7 +321,7 @@ dependencies = [
 name = "chip_assembler"
 version = "0.1.0"
 dependencies = [
- "itertools",
+ "chip_lexer",
 ]
 
 [[package]]
@@ -332,10 +332,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "chip_lexer"
+version = "0.1.0"
+dependencies = [
+ "itertools",
+]
+
+[[package]]
 name = "chip_macro"
 version = "0.1.0"
 dependencies = [
  "chip_assembler",
+ "chip_lexer",
  "quote",
  "syn 2.0.38",
 ]

@@ -34,9 +34,6 @@ impl<'l> Lexer<'l> {
                 .peeking_take_while(|&(_, c)| c.is_ascii_alphanumeric())
                 .count();
 
-        #[cfg(debug_assertions)]
-        dbg!(&self.input[head..=tail]);
-
         match &self.input[head..=tail] {
             s if s.starts_with("0x") => {
                 let number = u16::from_str_radix(&s[2..], 16).ok();

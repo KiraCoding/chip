@@ -1,5 +1,5 @@
-use crate::lexer::Lexer;
-use crate::token::{Delimeter, Mnemonic, Register, Token};
+use chip_lexer::lexer::Lexer;
+use chip_lexer::token::{Delimeter, Mnemonic, Register, Token};
 use core::fmt::{Display, Formatter};
 use core::iter::Peekable;
 use std::error::Error;

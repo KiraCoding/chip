@@ -1,4 +1,5 @@
-use chip_assembler::{assembler::Assembler, lexer::Lexer, parser::Parser};
+use chip_assembler::{assembler::Assembler, parser::Parser};
+use chip_lexer::lexer::Lexer;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, LitStr};

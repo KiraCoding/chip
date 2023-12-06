@@ -15,9 +15,6 @@ impl<'a> Iterator for Assembler<'a> {
 
     fn next(&mut self) -> Option<Self::Item> {
         self.parser.next().map(|instruction| {
-            #[cfg(debug_assertions)]
-            dbg!(&instruction);
-
             match instruction {
                 Instruction::Cls => 0x00E0,
                 Instruction::Ret => 0x00EE,

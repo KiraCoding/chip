@@ -11,5 +11,6 @@ proc-macro = true
 
 [dependencies]
 chip_assembler = { path = "../chip_assembler" }
+chip_lexer = { path = "../chip_lexer" }
 quote = "1.0.33"
 syn = "2.0.38"

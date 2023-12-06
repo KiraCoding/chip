@@ -29,7 +29,7 @@ impl<'t> TryFrom<&str> for Token<'t> {
 }
 
 impl<'t> Display for Token<'t> {
-    fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, _f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
             Token::Delimeter(_) => todo!(),
             Token::Mnemonic(_) => todo!(),
@@ -115,7 +115,7 @@ impl TryFrom<&str> for Mnemonic {
 }
 
 impl Display for Mnemonic {
-    fn fmt(&self, _f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, _f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         todo!()
     }
 }

@@ -58,7 +58,7 @@ impl<'l> Iterator for Lexer<'l> {
                     self.next()
                 }
                 ',' => Some(Token::Delimeter(Delimeter::Comma)),
-                c if c.is_ascii_alphabetic() || c.is_ascii_digit() => Some(self.lex_token(pos)),
+                c if c.is_ascii_alphanumeric() => Some(self.lex_token(pos)),
                 _ => Some(Token::Unknown(&self.input[pos..=pos])),
             })
     }

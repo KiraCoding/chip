@@ -2,8 +2,8 @@ use chip_lexer::lexer::Lexer;
 use chip_lexer::token::{Delimeter, Mnemonic, Register, Token};
 use core::fmt::{Display, Formatter};
 use core::iter::Peekable;
-use std::error::Error;
-use std::fmt::Debug;
+use core::error::Error;
+use core::fmt::Debug;
 
 pub struct Parser<'p> {
     lexer: Peekable<Lexer<'p>>,
@@ -212,7 +212,7 @@ pub enum ParserError<'t> {
 }
 
 impl<'t> Display for ParserError<'t> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         match self {
             Self::Expected(expected, found) => {
                 write!(f, "Expected {:?}, but found {:?}", expected, found)

@@ -18,7 +18,6 @@ A development suite for CHIP8 virtual machine enthusiasts, offering essential to
 ### Prerequisites
 - `Rust >= 1.64.0`
 
-
 ### Debug
 ```
 cargo build
@@ -33,7 +32,7 @@ cargo build --release
 Chip is distributed under the terms of the GNU General Public License v3.0.
 - [`LICENSE`][license] ─ `GNU GPL-3.0` ─ https://www.gnu.org/licenses/gpl-3.0.en.html
 
-[chip]:             ./chip/ 
+[chip]:             ./chip/
 [chip_assembler]:   ./chip_assembler/
 [chip_interpreter]: ./chip_interpreter/
 [chip_lexer]:       ./chip_lexer/

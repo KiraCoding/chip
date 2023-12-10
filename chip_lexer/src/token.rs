@@ -143,6 +143,7 @@ pub enum Register {
 impl Shl<u16> for Register {
     type Output = u16;
 
+    #[inline]
     fn shl(self, rhs: u16) -> Self::Output {
         (self as u16) << rhs
     }

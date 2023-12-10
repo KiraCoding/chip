@@ -2,15 +2,10 @@
 name = "chip"
 version = "0.1.0"
 authors.workspace = true
-edition.workspace = true
 rust-version.workspace = true
+edition.workspace = true
 license.workspace = true
 
 [dependencies]
-anyhow = { version = "1.0.75" }
+clap = { version = "4.4.11", features = ["derive"] }
 chip_assembler = { path = "../chip_assembler" }
-chip_interpreter = { path = "../chip_interpreter" }
-pixels = { version = "0.13.0" }
-rodio = { version = "0.17.3", default-features = false }
-tokio = { version = "1.33.0", features = ["macros", "rt-multi-thread"] }
-winit = { version = "0.28.7" }

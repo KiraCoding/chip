@@ -1,82 +1,72 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+use chip_assembler::assembler::Assembler;
+use clap::{Parser, Subcommand};
+use std::env::current_dir;
+use std::fs::{read_to_string, write};
+use std::path::PathBuf;
 
-use anyhow::Result;
-use chip_interpreter::interpreter::{Interpreter, InterpreterEvent};
-use pixels::{Pixels, SurfaceTexture};
-use rodio::source::SineWave;
-use rodio::{OutputStream, Sink};
-use tokio::main;
-use winit::dpi::LogicalSize;
-use winit::event::{Event, StartCause, WindowEvent};
-use winit::event_loop::{ControlFlow, EventLoop};
-use winit::window::WindowBuilder;
+#[derive(Debug, Parser)]
+#[command(version)]
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
 
-#[main]
-async fn main() -> Result<()> {
-    let event_loop = EventLoop::new();
+#[derive(Debug, Subcommand)]
+enum Commands {
+    Run { path: PathBuf },
+    Build { path: PathBuf },
+    Format { path: PathBuf },
+}
 
-    let window = {
-        let size = LogicalSize::new(500, 250);
-        let title = env!("CARGO_PKG_NAME");
+fn main() {
+    let cli = Cli::parse();
 
-        WindowBuilder::new()
-            .with_title(title)
-            .with_inner_size(size)
-            .with_min_inner_size(size)
-            .build(&event_loop)?
-    };
+    match cli.command {
+        Commands::Run { path: _ } => todo!(),
+        Commands::Build { path } => {
+            let path = current_dir().unwrap().join(path);
+            let file = read_to_string(&path).unwrap();
 
-    let size = window.inner_size();
+            print_blue_bar("COMP");
+            println!("{}", path.as_os_str().to_str().unwrap());
 
-    let mut pixels = {
-        let surface_texture = SurfaceTexture::new(size.width, size.height, &window);
-        Pixels::new_async(64, 32, surface_texture).await?
-    };
+            let bytes = Assembler::from(file.as_str())
+                .flat_map(|opcode| opcode.to_le_bytes())
+                .collect::<Vec<u8>>();
 
-    let mut interpreter = Interpreter::default();
+            let out = current_dir().unwrap().join("out.ch8");
 
-    let program = &[0x60, 0x04, 0xF0, 0x18, 0x00, 0xE0, 0x12, 0x04];
+            write(&out, bytes).unwrap();
 
-    interpreter.load(program);
-
-    event_loop.run(move |event, _, control_flow| {
-        *control_flow = ControlFlow::Poll;
-
-        match event {
-            Event::NewEvents(StartCause::Poll) => match interpreter.cycle() {
-                InterpreterEvent::Audio => {
-                    println!("AUDIO");
-
-                    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
-                    let sink = Sink::try_new(&stream_handle).unwrap();
-
-                    let source = SineWave::new(440.0);
-                    sink.append(source);
-
-                    std::thread::sleep(std::time::Duration::from_millis(500));
-                }
-                _ => (),
-            },
-            Event::MainEventsCleared => {
-                interpreter
-                    .screen_buffer
-                    .iter()
-                    .zip(pixels.frame_mut().chunks_exact_mut(4))
-                    .for_each(|(&pixel, chunk)| {
-                        let color = pixel * 255;
-                        chunk.copy_from_slice(&[color, color, color, 255]);
-                    });
-
-                if let Err(err) = pixels.render() {
-                    eprintln!("pxiels: {}", err);
-                    *control_flow = ControlFlow::Exit;
-                };
-            }
-            Event::WindowEvent {
-                event: WindowEvent::CloseRequested,
-                ..
-            } => *control_flow = ControlFlow::Exit,
-            _ => (),
+            print_green_bar("DONE");
+            print!("File saved at ({})", out.as_os_str().to_str().unwrap());
         }
-    });
+        Commands::Format { path: _ } => todo!(),
+    }
+}
+
+fn print_green_bar(text: &str) {
+    // ANSI escape codes for green background and text
+    let green_bg = "\x1b[48;5;40m"; // ANSI escape code for green background
+    let black_text = "\x1b[30m"; 
+    let reset = "\x1b[0m"; // ANSI escape code to reset colors
+
+    // Print the text within the green bar
+    print!("{}  {}{}  {} ", green_bg, black_text, text, reset);
+
+    // Reset colors
+    print!("{}", reset);
+}
+
+fn print_blue_bar(text: &str) {
+    // ANSI escape codes for blue background and text
+    let blue_bg = "\x1b[48;5;33m"; // ANSI escape code for blue background
+    let black_text = "\x1b[30m"; 
+    let reset = "\x1b[0m";         // ANSI escape code to reset colors
+
+    // Print the text within the blue bar
+    print!("{}  {}{}  {} ", blue_bg, black_text, text, reset);
+
+    // Reset colors
+    print!("{}", reset);
 }

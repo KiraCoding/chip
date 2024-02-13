@@ -41,7 +41,7 @@ impl<'a> Iterator for Assembler<'a> {
             Instruction::Xor(vx, vy) => 0x8003 | vx << 8 | vy << 4,
             Instruction::AddRegReg(vx, vy) => 0x8004 | vx << 8 | vy << 4,
             Instruction::Sub(vx, vy) => 0x8005 | vx << 8 | vy << 4,
-            Instruction::Shr(vx, vy) => 0x8006 | vx << 8 | vy << 4,
+            Instruction::Shr(vx, vy) => 0x8006 | vx << 8 | vy << 4, 
             Instruction::Subn(vx, vy) => 0x8007 | vx << 8 | vy << 4,
             Instruction::Shl(vx, vy) => 0x800E | vx << 8 | vy << 4,
             Instruction::SneRegReg(vx, vy) => 0x9000 | vx << 8 | vy << 4,
